@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tactical Live Incident Map — SURAKSHA Command Center</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/authority.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body style="overflow: hidden;">
+
+  <!-- Command Center Header -->
+  <header class="command-center-header">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <div class="command-center-brand">
+        <div class="brand-icon" style="background-color: var(--emergency-red);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px; font-weight: 800; letter-spacing: 1px;">SURAKSHA COMMAND CENTER</span>
+            <span class="badge-command">TACTICAL GIS</span>
+          </div>
+          <div style="font-size: 11px; color: #94A3B8;">Live Precision Incident Telemetry & SOS Beacon Monitor</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <nav style="display: flex; gap: 8px;">
+          <a href="/authority/dashboard.html" class="nav-link" style="color: #CBD5E1;">Overview</a>
+          <a href="/authority/incidents.html" class="nav-link" style="color: #CBD5E1;">Incident Triage</a>
+          <a href="/authority/map.html" class="nav-link active" style="color: white; background-color: rgba(255,255,255,0.1);">Tactical Map</a>
+          <a href="/dashboard.html" class="nav-link" style="color: #94A3B8;">Citizen View</a>
+        </nav>
+        <button class="btn btn-secondary btn-sm" onclick="Auth.logout()" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">
+          Log Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tactical Split Screen Layout -->
+  <div style="padding: 12px 16px; height: calc(100vh - var(--nav-height)); display: flex; flex-direction: column;">
+    <div class="tactical-map-layout" style="flex: 1;">
+      
+      <!-- Leaflet Map Panel -->
+      <div style="height: 100%; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--slate-200); position: relative;">
+        <div id="tactical-leaflet-map" style="width: 100%; height: 100%;"></div>
+        
+        <!-- Legend Overlay -->
+        <div class="map-legend" style="bottom: 16px; left: 16px;">
+          <div class="legend-title">Tactical Beacon Legend</div>
+          <div class="legend-item"><span style="color: #DC2626;">🚨</span> <span>Pulsing Beacon = Active SOS</span></div>
+          <div class="legend-item"><div class="legend-color" style="background-color: var(--cat-fire);"></div><span>Fire</span></div>
+          <div class="legend-item"><div class="legend-color" style="background-color: var(--cat-accident);"></div><span>Accident</span></div>
+          <div class="legend-item"><div class="legend-color" style="background-color: var(--cat-suspicious);"></div><span>Suspicious</span></div>
+          <div class="legend-item"><div class="legend-color" style="background-color: var(--cat-medical);"></div><span>Medical</span></div>
+          <div class="legend-item"><div class="legend-color" style="background-color: var(--cat-resolved);"></div><span>Resolved</span></div>
+        </div>
+      </div>
+
+      <!-- Tactical Inspector Sidebar -->
+      <div class="tactical-sidebar">
+        <div class="tactical-sidebar-header">
+          <div style="font-size: 11px; font-weight: 800; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.5px;">
+            Telemetry Inspector
+          </div>
+          <h3 style="font-size: 16px; color: var(--navy-900);">Incident Details</h3>
+        </div>
+
+        <div id="tactical-sidebar-content">
+          <div style="text-align: center; padding: 48px 16px; color: var(--slate-400);">
+            <div style="font-size: 32px; margin-bottom: 12px;">📍</div>
+            <p style="font-size: 13px;">Click on any incident marker or SOS beacon on the tactical map to inspect telemetry and dispatch response teams.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Inspection Modal -->
+  <div class="modal-overlay" id="inspect-modal">
+    <div class="modal-card" style="max-width: 640px;">
+      <div class="modal-header" style="background-color: var(--navy-950); color: white;">
+        <div>
+          <span style="font-family: monospace; font-size: 13px; color: #60A5FA;" id="inspect-ref">SUR-2026-000000</span>
+          <h3 class="modal-title" style="color: white;" id="inspect-title">Incident Title</h3>
+        </div>
+        <button class="modal-close" style="color: white;">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+          <span class="badge badge-fire" id="inspect-category">Fire</span>
+          <span class="badge badge-high" id="inspect-severity">High</span>
+          <span class="badge" id="inspect-status">Submitted</span>
+          <span class="badge" id="inspect-verify-status">Under Review</span>
+        </div>
+        <div style="font-size: 13px; color: var(--slate-500); margin-bottom: 8px;" id="inspect-location">📍 Location</div>
+        <div style="font-size: 13px; color: var(--slate-500); margin-bottom: 14px;">
+          👤 Reporter: <strong id="inspect-reporter">Citizen</strong>
+        </div>
+        <div style="font-size: 13px; color: var(--navy-800); background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 12px; margin-bottom: 16px;" id="inspect-desc">Description</div>
+        <div style="font-size: 13px; margin-bottom: 16px;">
+          🛡️ Assigned Unit: <strong id="inspect-assigned">None</strong>
+        </div>
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px;">Submitted Evidence:</div>
+          <div class="evidence-preview-grid" id="inspect-evidence"></div>
+        </div>
+        <div style="border-top: 1px solid var(--slate-200); padding-top: 16px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--navy-900); margin-bottom: 10px;">Operational Actions:</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-success btn-sm" id="btn-action-verify">✓ Verify Report</button>
+            <button class="btn btn-secondary btn-sm" id="btn-action-assign">Assign Unit</button>
+            <button class="btn btn-primary btn-sm" id="btn-action-resolve">Mark Resolved</button>
+            <button class="btn btn-outline-danger btn-sm" id="btn-action-reject">Flag Inaccurate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assignment Modal -->
+  <div class="modal-overlay" id="assign-modal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Assign Response Team</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--slate-500); margin-bottom: 16px;">
+          Assigning incident <strong id="assign-modal-ref">SUR-2026-000000</strong>.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Available Sector Officer</label>
+          <select class="form-control" id="assign-officer-select"><option value="">Loading officers...</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Custom Unit Name</label>
+          <input type="text" class="form-control" id="assign-team-input" placeholder="e.g. Traffic Sector 2 Patrol">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Instructions / Note</label>
+          <textarea class="form-control" id="assign-note-input" rows="2" placeholder="Dispatch note..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('assign-modal')">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-assign">Confirm & Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/map.js"></script>
+  <script src="/js/authority.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AuthorityCenter.initTacticalMap();
+    });
+  </script>
+</body>
+</html>

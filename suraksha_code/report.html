@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report an Incident — SURAKSHA</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SURAKSHA</span>
+          <span class="brand-tagline">CITIZEN SAFETY PLATFORM</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="/map.html" class="nav-link">Safety Map</a></li>
+        <li><a href="/report.html" class="nav-link active">Report</a></li>
+        <li><a href="/reports.html" class="nav-link">My Reports</a></li>
+        <li><a href="/safety.html" class="nav-link">Safety</a></li>
+        <li><a href="/profile.html" class="nav-link">Profile</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sos-header btn-sos-trigger" id="header-sos-btn">
+          <span class="pulse-dot"></span>
+          <span>SOS</span>
+        </button>
+        <div id="nav-user-actions"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container wizard-container">
+      
+      <!-- Wizard Progress Indicators -->
+      <div class="wizard-steps" id="wizard-progress-bar">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Category</span>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Location</span>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Details</span>
+        </div>
+        <div class="step-item" data-step="4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Evidence</span>
+        </div>
+        <div class="step-item" data-step="5">
+          <div class="step-circle">5</div>
+          <span class="step-label">Review</span>
+        </div>
+      </div>
+
+      <!-- Form Container -->
+      <div class="card" id="wizard-form-container" style="box-shadow: var(--shadow-md);">
+        
+        <!-- STEP 1: What Happened? -->
+        <div class="wizard-pane active" id="pane-step-1">
+          <div style="margin-bottom: 24px;">
+            <h2 style="font-size: 22px; color: var(--navy-900); margin-bottom: 4px;">Step 1: What happened?</h2>
+            <p style="font-size: 14px;">Select the incident type that most closely matches the situation.</p>
+          </div>
+
+          <div class="category-grid">
+            <div class="category-card" data-category="Fire">
+              <div class="category-icon cat-fire-icon">🔥</div>
+              <div class="category-name">Fire</div>
+              <div class="category-desc">Visible flames, smoke, gas or electrical fire hazard</div>
+            </div>
+
+            <div class="category-card" data-category="Road Accident">
+              <div class="category-icon cat-accident-icon">🚗</div>
+              <div class="category-name">Road Accident</div>
+              <div class="category-desc">Vehicle crash, collision, blocked road, pedestrian hit</div>
+            </div>
+
+            <div class="category-card" data-category="Suspicious Activity">
+              <div class="category-icon cat-suspicious-icon">⚠️</div>
+              <div class="category-name">Suspicious Activity</div>
+              <div class="category-desc">Unattended bag, harassment, stalking, safety risk</div>
+            </div>
+
+            <div class="category-card" data-category="Medical Emergency">
+              <div class="category-icon cat-medical-icon">🏥</div>
+              <div class="category-name">Medical Emergency</div>
+              <div class="category-desc">Sudden health collapse, injury, cardiac or stroke event</div>
+            </div>
+
+            <div class="category-card" data-category="Missing Person">
+              <div class="category-icon cat-missing-icon">🔎</div>
+              <div class="category-name">Missing Person</div>
+              <div class="category-desc">Lost child, separated elderly family member</div>
+            </div>
+
+            <div class="category-card" data-category="Other Emergency">
+              <div class="category-icon cat-other-icon">🚨</div>
+              <div class="category-name">Other Emergency</div>
+              <div class="category-desc">Gas leak, structural collapse, municipal danger</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 32px;">
+            <button class="btn btn-primary btn-wizard-next">
+              <span>Next: Pin Location →</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Where Did It Happen? -->
+        <div class="wizard-pane" id="pane-step-2">
+          <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 22px; color: var(--navy-900); margin-bottom: 4px;">Step 2: Where did it happen?</h2>
+            <p style="font-size: 14px;">Tap anywhere on the map or drag the pin to set the exact incident location.</p>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-use-gps">
+              <span>🎯 Use My Current GPS Location</span>
+            </button>
+            <div style="font-size: 12px; color: var(--slate-500); display: flex; align-items: center;" id="coordinates-display">
+              Selected: 28.9845, 77.7064
+            </div>
+          </div>
+
+          <div class="mini-map-container" id="mini-picker-map"></div>
+
+          <div class="form-group">
+            <label class="form-label" for="address">Street / Area Name <span class="required">*</span></label>
+            <input type="text" id="address" class="form-control" placeholder="e.g. Begum Bridge Road, Near PL Sharma Market, Meerut" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="landmark">Prominent Landmark (Optional)</label>
+            <input type="text" id="landmark" class="form-control" placeholder="e.g. Near PVS Mall Crossing / Abu Lane">
+            <div class="form-hint">Helps emergency response drivers identify the scene faster.</div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+            <button class="btn btn-secondary btn-wizard-prev">← Back</button>
+            <button class="btn btn-primary btn-wizard-next">Next: Incident Details →</button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Tell Us More -->
+        <div class="wizard-pane" id="pane-step-3">
+          <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 22px; color: var(--navy-900); margin-bottom: 4px;">Step 3: Tell us more</h2>
+            <p style="font-size: 14px;">Give clear, actionable details for dispatch personnel.</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="title">Short Summary / Title <span class="required">*</span></label>
+            <input type="text" id="title" class="form-control" placeholder="e.g. Vehicle collision with minor rider injuries" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="severity">Severity Level</label>
+              <select id="severity" class="form-control">
+                <option value="Low">Low — Minor hazard or annoyance</option>
+                <option value="Moderate" selected>Moderate — Needs attention soon</option>
+                <option value="High">High — Urgent threat or active fire</option>
+                <option value="Critical">Critical — Immediate life-threatening</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="people_affected">Number of People Affected</label>
+              <input type="number" id="people_affected" class="form-control" placeholder="0" min="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="description">Detailed Description <span class="required">*</span></label>
+            <textarea id="description" class="form-control" rows="4" placeholder="Describe the scene: any visible injuries, smoke, car numbers, or description of missing person..." required minlength="10"></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label class="form-label" for="reporter_name">Your Name (Optional)</label>
+              <input type="text" id="reporter_name" class="form-control" placeholder="Leave blank to report anonymously">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reporter_contact">Your Phone (Optional)</label>
+              <input type="tel" id="reporter_contact" class="form-control" placeholder="+91 XXXXX XXXXX">
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 24px;">
+            <button class="btn btn-secondary btn-wizard-prev">← Back</button>
+            <button class="btn btn-primary btn-wizard-next">Next: Add Evidence →</button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Add Evidence -->
+        <div class="wizard-pane" id="pane-step-4">
+          <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 22px; color: var(--navy-900); margin-bottom: 4px;">Step 4: Add evidence photos</h2>
+            <p style="font-size: 14px;">Photographs assist responders in assessing the hazard before arrival.</p>
+          </div>
+
+          <div class="upload-dropzone" id="evidence-dropzone">
+            <div class="upload-icon">📷</div>
+            <div style="font-size: 15px; font-weight: 700; color: var(--navy-900); margin-bottom: 4px;">
+              Click or drag photos here to upload
+            </div>
+            <div style="font-size: 13px; color: var(--slate-500);">
+              JPG, PNG, or WEBP up to 5MB each. You can select multiple images.
+            </div>
+            <input type="file" id="evidence-file-input" multiple accept="image/*" style="display: none;">
+          </div>
+
+          <div class="evidence-preview-grid" id="evidence-preview-grid"></div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 32px;">
+            <button class="btn btn-secondary btn-wizard-prev">← Back</button>
+            <button class="btn btn-primary btn-wizard-next">Next: Review & Submit →</button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Review & Submit -->
+        <div class="wizard-pane" id="pane-step-5">
+          <div style="margin-bottom: 20px;">
+            <h2 style="font-size: 22px; color: var(--navy-900); margin-bottom: 4px;">Step 5: Review your report</h2>
+            <p style="font-size: 14px;">Confirm details before broadcasting to the response queue.</p>
+          </div>
+
+          <div style="background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+              <div>
+                <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Category</span>
+                <div style="font-size: 15px; font-weight: 700; color: var(--navy-900);" id="review-category">—</div>
+              </div>
+              <div>
+                <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Severity</span>
+                <div style="font-size: 15px; font-weight: 700; color: var(--navy-900);" id="review-severity">—</div>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Title</span>
+              <div style="font-size: 15px; font-weight: 700; color: var(--navy-900);" id="review-title">—</div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Location</span>
+              <div style="font-size: 14px; color: var(--navy-800);" id="review-location">—</div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Description</span>
+              <div style="font-size: 13px; color: var(--navy-700); line-height: 1.5;" id="review-description">—</div>
+            </div>
+
+            <div>
+              <span style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Evidence</span>
+              <div style="font-size: 13px; color: var(--navy-700);" id="review-photos-count">0 photos attached</div>
+            </div>
+          </div>
+
+          <div style="background-color: var(--safe-green-light); border: 1px solid #A7F3D0; border-radius: 8px; padding: 12px; font-size: 13px; color: #065F46; margin-bottom: 24px;">
+            ✓ <strong>Closed-Loop Promise:</strong> A reference tracking code will be generated immediately. You can view official verification and team assignment in real time.
+          </div>
+
+          <div style="display: flex; justify-content: space-between;">
+            <button class="btn btn-secondary btn-wizard-prev">← Back</button>
+            <button class="btn btn-primary btn-lg" id="btn-submit-report" onclick="ReportWizard.submitReport()">
+              Submit Incident Report
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Submission Success View -->
+      <div class="card" id="wizard-success-view" style="display: none; text-align: center; padding: 48px 32px; box-shadow: var(--shadow-lg);">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background-color: var(--safe-green); color: white; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+          ✓
+        </div>
+        <h2 style="font-size: 26px; color: var(--navy-900); margin-bottom: 8px;">Your report has been received.</h2>
+        <p style="font-size: 15px; color: var(--slate-600); max-width: 520px; margin: 0 auto 24px;">
+          The report has been logged and routed to the SURAKSHA Command Center for triage. We will keep you updated through every step.
+        </p>
+
+        <div style="background-color: var(--slate-50); border: 1px dashed var(--slate-300); border-radius: var(--radius-md); padding: 16px; max-width: 320px; margin: 0 auto 32px;">
+          <div style="font-size: 12px; color: var(--slate-500); text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Tracking Reference ID</div>
+          <div style="font-size: 24px; font-weight: 800; font-family: monospace; color: var(--navy-900);" id="success-reference-id">
+            SUR-2026-000000
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+          <a href="/reports.html" id="btn-track-submitted-report" class="btn btn-primary btn-lg">
+            Track Report Status →
+          </a>
+          <a href="/map.html" class="btn btn-secondary btn-lg">
+            View on Safety Map
+          </a>
+          <a href="/report.html" class="btn btn-secondary btn-lg">
+            Submit Another Report
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar">
+    <ul class="mobile-nav-items">
+      <li class="mobile-nav-item">
+        <a href="/dashboard.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📊</span>
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/map.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">🗺️</span>
+          <span>Map</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item mobile-sos-center">
+        <button class="btn-sos-mobile btn-sos-trigger" aria-label="Trigger SOS">
+          <span>SOS</span>
+        </button>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/report.html" class="mobile-nav-link active">
+          <span class="mobile-nav-icon">📝</span>
+          <span>Report</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/reports.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📋</span>
+          <span>History</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/sos.js"></script>
+  <script src="/js/report.js"></script>
+</body>
+</html>

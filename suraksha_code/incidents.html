@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Incident Management & Triage — SURAKSHA Command Center</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/authority.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <!-- Command Center Header -->
+  <header class="command-center-header">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <div class="command-center-brand">
+        <div class="brand-icon" style="background-color: var(--emergency-red);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px; font-weight: 800; letter-spacing: 1px;">SURAKSHA COMMAND CENTER</span>
+            <span class="badge-command">INCIDENT TRIAGE</span>
+          </div>
+          <div style="font-size: 11px; color: #94A3B8;">Incident Record Management, Verification & Evidence Inspection</div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <nav style="display: flex; gap: 8px;">
+          <a href="/authority/dashboard.html" class="nav-link" style="color: #CBD5E1;">Overview</a>
+          <a href="/authority/incidents.html" class="nav-link active" style="color: white; background-color: rgba(255,255,255,0.1);">Incident Triage</a>
+          <a href="/authority/map.html" class="nav-link" style="color: #CBD5E1;">Tactical Map</a>
+          <a href="/dashboard.html" class="nav-link" style="color: #94A3B8;">Citizen View</a>
+        </nav>
+        <button class="btn btn-secondary btn-sm" onclick="Auth.logout()" style="background: transparent; color: white; border-color: rgba(255,255,255,0.2);">
+          Log Out
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <div style="margin-bottom: 24px;">
+        <h1 style="font-size: 26px; font-weight: 800; color: var(--navy-900); margin-bottom: 4px;">Incident Triage & Verification</h1>
+        <p style="font-size: 14px; color: var(--slate-500);">Review citizen reports, inspect photo evidence, verify credibility, and deploy emergency teams.</p>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="card" style="padding: 16px 20px; margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 12px;">
+          <div>
+            <label class="form-label" style="font-size: 12px;">Search by ID / Keyword / Location</label>
+            <input type="text" id="table-search" class="form-control" placeholder="Search reference code, landmark, description...">
+          </div>
+
+          <div>
+            <label class="form-label" style="font-size: 12px;">Category</label>
+            <select class="form-control" id="filter-category">
+              <option value="">All Categories</option>
+              <option value="Fire">Fire</option>
+              <option value="Road Accident">Road Accident</option>
+              <option value="Suspicious Activity">Suspicious Activity</option>
+              <option value="Medical Emergency">Medical Emergency</option>
+              <option value="Missing Person">Missing Person</option>
+              <option value="Other Emergency">Critical Emergency</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label" style="font-size: 12px;">Status</label>
+            <select class="form-control" id="filter-status">
+              <option value="">All Statuses</option>
+              <option value="Submitted">Submitted</option>
+              <option value="Under Verification">Under Verification</option>
+              <option value="Authority Assigned">Authority Assigned</option>
+              <option value="Action Taken">Action Taken</option>
+              <option value="Resolved">Resolved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label" style="font-size: 12px;">Severity</label>
+            <select class="form-control" id="filter-severity">
+              <option value="">All Severities</option>
+              <option value="Critical">Critical</option>
+              <option value="High">High</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incidents Data Table -->
+      <div class="data-table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Category</th>
+              <th>Severity</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Assigned Unit</th>
+              <th>Reported</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="incidents-table-body">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 32px; color: var(--slate-400);">Loading incidents...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Inspection Modal -->
+  <div class="modal-overlay" id="inspect-modal">
+    <div class="modal-card" style="max-width: 640px;">
+      <div class="modal-header" style="background-color: var(--navy-950); color: white;">
+        <div>
+          <span style="font-family: monospace; font-size: 13px; color: #60A5FA;" id="inspect-ref">SUR-2026-000000</span>
+          <h3 class="modal-title" style="color: white;" id="inspect-title">Incident Title</h3>
+        </div>
+        <button class="modal-close" style="color: white;">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+          <span class="badge badge-fire" id="inspect-category">Fire</span>
+          <span class="badge badge-high" id="inspect-severity">High</span>
+          <span class="badge" id="inspect-status">Submitted</span>
+          <span class="badge" id="inspect-verify-status">Under Review</span>
+        </div>
+
+        <div style="font-size: 13px; color: var(--slate-500); margin-bottom: 8px;" id="inspect-location">📍 Location</div>
+        <div style="font-size: 13px; color: var(--slate-500); margin-bottom: 14px;">
+          👤 Reporter: <strong id="inspect-reporter">Citizen</strong>
+        </div>
+
+        <div style="font-size: 13px; color: var(--navy-800); background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 12px; margin-bottom: 16px;" id="inspect-desc">
+          Description
+        </div>
+
+        <div style="font-size: 13px; margin-bottom: 16px;">
+          🛡️ Assigned Unit: <strong id="inspect-assigned">None</strong>
+        </div>
+
+        <!-- Evidence Photos Container -->
+        <div style="margin-bottom: 16px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px;">Submitted Photo Evidence:</div>
+          <div class="evidence-preview-grid" id="inspect-evidence"></div>
+        </div>
+
+        <!-- Internal Notes -->
+        <div style="margin-bottom: 20px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--navy-900); margin-bottom: 4px;">Internal Logged Notes:</div>
+          <div style="font-size: 12px; color: var(--slate-600); background-color: #FFFBEB; border: 1px solid #FDE68A; padding: 8px 12px; border-radius: 6px;" id="inspect-notes">
+            No notes
+          </div>
+        </div>
+
+        <!-- Operational Actions Grid -->
+        <div style="border-top: 1px solid var(--slate-200); padding-top: 16px;">
+          <div style="font-size: 13px; font-weight: 700; color: var(--navy-900); margin-bottom: 10px;">Operational Actions:</div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-success btn-sm" id="btn-action-verify">✓ Verify Report</button>
+            <button class="btn btn-secondary btn-sm" id="btn-action-assign">Assign Unit</button>
+            <button class="btn btn-primary btn-sm" id="btn-action-resolve">Mark Resolved</button>
+            <button class="btn btn-outline-danger btn-sm" id="btn-action-reject">Flag Inaccurate</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assignment Modal -->
+  <div class="modal-overlay" id="assign-modal">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Assign Emergency Response Unit</h3>
+        <button class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--slate-500); margin-bottom: 16px;">
+          Assigning incident <strong id="assign-modal-ref">SUR-2026-000000</strong> to on-ground emergency dispatch.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Available Officer in Sector</label>
+          <select class="form-control" id="assign-officer-select">
+            <option value="">Loading officers...</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Or Custom Unit Identifier</label>
+          <input type="text" class="form-control" id="assign-team-input" placeholder="e.g. PCR Eagle-12 / Fire Tender 04">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dispatch Instructions / Note</label>
+          <textarea class="form-control" id="assign-note-input" rows="2" placeholder="e.g. Approach via Janpath to avoid traffic."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="App.closeModal('assign-modal')">Cancel</button>
+        <button class="btn btn-primary" id="btn-confirm-assign">Confirm & Dispatch</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/authority.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AuthorityCenter.initIncidentsPage();
+    });
+  </script>
+</body>
+</html>

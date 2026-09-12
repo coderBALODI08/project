@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: suraksha_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: suraksha_db
+      POSTGRES_USER: suraksha_user
+      POSTGRES_PASSWORD: suraksha_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: suraksha_backend
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://suraksha_user:suraksha_password@db:5432/suraksha_db
+      SECRET_KEY: suraksha-production-docker-secret-2026
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploads:/app/backend/uploads
+
+volumes:
+  pgdata:

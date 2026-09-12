@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Citizen Account — SURAKSHA</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="background-color: var(--slate-100);">
+
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SURAKSHA</span>
+          <span class="brand-tagline">CITIZEN SAFETY PLATFORM</span>
+        </div>
+      </a>
+      <div>
+        <button class="btn-sos-header btn-sos-trigger" id="header-sos-btn">
+          <span class="pulse-dot"></span>
+          <span>SOS</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 480px;">
+      
+      <div class="card" style="box-shadow: var(--shadow-lg);">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--navy-900); margin-bottom: 6px;">Join Your Community</h1>
+          <p style="font-size: 14px; color: var(--slate-500);">Report incidents, track status updates, and help protect your neighborhood.</p>
+        </div>
+
+        <form id="register-form">
+          <div class="form-group">
+            <label class="form-label" for="full_name">Full Name <span class="required">*</span></label>
+            <input type="text" id="full_name" class="form-control" placeholder="e.g. Priya Sharma" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address <span class="required">*</span></label>
+            <input type="email" id="email" class="form-control" placeholder="name@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="phone">Mobile Phone (Optional)</label>
+            <input type="tel" id="phone" class="form-control" placeholder="+91 98765 43210">
+            <div class="form-hint">Used only for dispatch callbacks during emergency reports.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Create Password <span class="required">*</span></label>
+            <input type="password" id="password" class="form-control" placeholder="At least 6 characters" required minlength="6">
+          </div>
+
+          <div style="background-color: var(--slate-50); border: 1px solid var(--slate-200); border-radius: 8px; padding: 12px; font-size: 12px; color: var(--slate-600); margin-bottom: 20px;">
+            🔒 <strong>Citizen Privacy Assurance:</strong> Your contact information is never visible to other citizens on the public community safety map.
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="btn-register-submit" style="width: 100%;">
+            Create Free Account
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--slate-500);">
+          Already have an account? <a href="/login.html" style="font-weight: 600;">Log in here</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/sos.js"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('btn-register-submit');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Creating account...';
+
+      const payload = {
+        full_name: document.getElementById('full_name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim() || null,
+        password: document.getElementById('password').value,
+        role: 'citizen'
+      };
+
+      try {
+        const res = await ApiClient.auth.register(payload);
+        ApiClient.setToken(res.access_token);
+        ApiClient.setUser(res.user);
+
+        App.showToast('Account created successfully!', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 600);
+      } catch (err) {
+        App.showToast(err.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Create Free Account';
+      }
+    });
+  </script>
+</body>
+</html>

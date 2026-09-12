@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Citizen Safety Center — SURAKSHA</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <!-- Header Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SURAKSHA</span>
+          <span class="brand-tagline">CITIZEN SAFETY PLATFORM</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="/map.html" class="nav-link">Safety Map</a></li>
+        <li><a href="/report.html" class="nav-link">Report</a></li>
+        <li><a href="/reports.html" class="nav-link">My Reports</a></li>
+        <li><a href="/safety.html" class="nav-link active">Safety</a></li>
+        <li><a href="/profile.html" class="nav-link">Profile</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sos-header btn-sos-trigger" id="header-sos-btn">
+          <span class="pulse-dot"></span>
+          <span>SOS</span>
+        </button>
+        <div id="nav-user-actions"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <div style="max-width: 760px; margin-bottom: 36px;">
+        <h1 style="font-size: 28px; font-weight: 800; color: var(--navy-900); margin-bottom: 8px;">
+          Community Safety & Emergency Preparedness
+        </h1>
+        <p style="font-size: 15px; color: var(--navy-600);">
+          Crucial step-by-step guidance during critical emergencies. Stay calm, ensure personal safety first, and notify response personnel.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+        
+        <!-- Fire Safety -->
+        <div class="card" style="border-top: 4px solid var(--cat-fire);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">🔥</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Fire Emergency Response</h3>
+              <span style="font-size: 12px; color: var(--cat-fire); font-weight: 700;">Dial 101 or 112</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Evacuate immediately:</strong> Do not use elevators; use marked fire escape stairs.</li>
+            <li><strong>Stay low under smoke:</strong> Toxic gases rise; crawl where air is cleanest.</li>
+            <li><strong>Test doors before opening:</strong> Feel doorknobs with the back of your hand. If hot, do not open.</li>
+            <li><strong>Report exact floor & room:</strong> Submit a report on SURAKSHA with landmark and people trapped.</li>
+          </ul>
+        </div>
+
+        <!-- Road Accident -->
+        <div class="card" style="border-top: 4px solid var(--cat-accident);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">🚗</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Road Accident & Crash Response</h3>
+              <span style="font-size: 12px; color: var(--cat-accident); font-weight: 700;">Dial 108 (Ambulance) / 100 (Police)</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Secure the scene:</strong> Turn on vehicle hazard lights; place warning triangles if safe.</li>
+            <li><strong>Good Samaritan Protection:</strong> Indian law protects bystanders assisting accident victims from police harassment.</li>
+            <li><strong>Do not move injured spinal victims:</strong> Unless there is imminent fire or explosion risk.</li>
+            <li><strong>Pin location on SURAKSHA:</strong> Enable GPS to guide emergency ambulance navigation.</li>
+          </ul>
+        </div>
+
+        <!-- Medical Emergency -->
+        <div class="card" style="border-top: 4px solid var(--cat-medical);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">🏥</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Sudden Medical Emergencies</h3>
+              <span style="font-size: 12px; color: var(--cat-medical); font-weight: 700;">Dial 108 Immediately</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Assess responsiveness:</strong> Gently shake shoulders and ask loudly, "Are you okay?"</li>
+            <li><strong>Check breathing & pulse:</strong> If unresponsive with no normal breathing, begin chest compressions (100–120 bpm).</li>
+            <li><strong>Heat exhaustion:</strong> Move to cool shade, loosen clothing, elevate feet, offer cool water if conscious.</li>
+            <li><strong>Clear the path:</strong> Have someone wait on the main road to flag down incoming paramedics.</li>
+          </ul>
+        </div>
+
+        <!-- Suspicious Activity -->
+        <div class="card" style="border-top: 4px solid var(--cat-suspicious);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">⚠️</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Suspicious Activity & Public Safety</h3>
+              <span style="font-size: 12px; color: var(--cat-suspicious); font-weight: 700;">Dial 112 / 1090 (Women)</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Never confront suspects alone:</strong> Maintain safe distance and observe from well-lit areas.</li>
+            <li><strong>Unattended items:</strong> Do NOT touch, kick, or open unattended bags or suspicious containers.</li>
+            <li><strong>Note key identifiers:</strong> Note clothing color, height, vehicle number plates, and direction of travel.</li>
+            <li><strong>Use SOS:</strong> If feeling directly threatened or followed, activate SURAKSHA SOS for immediate beacon broadcast.</li>
+          </ul>
+        </div>
+
+        <!-- Missing Persons -->
+        <div class="card" style="border-top: 4px solid var(--cat-missing);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">🔎</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Missing Person Guidance</h3>
+              <span style="font-size: 12px; color: var(--cat-missing); font-weight: 700;">Dial 100 or 1098 (Childline)</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Zero waiting period:</strong> There is NO 24-hour waiting rule for missing children or vulnerable adults in India.</li>
+            <li><strong>Recent photo:</strong> Have the most recent, clear photograph ready to attach on SURAKSHA.</li>
+            <li><strong>Specific clothing markers:</strong> Color of shirt, shoes, birthmarks, and languages spoken.</li>
+            <li><strong>Last known location:</strong> Report the exact spot, gate number, or transit station where last seen.</li>
+          </ul>
+        </div>
+
+        <!-- Emergency Preparedness -->
+        <div class="card" style="border-top: 4px solid var(--cat-critical);">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+            <div style="font-size: 28px;">🎒</div>
+            <div>
+              <h3 style="font-size: 18px; color: var(--navy-900);">Emergency Kit Preparedness</h3>
+              <span style="font-size: 12px; color: var(--navy-900); font-weight: 700;">Household Preparedness</span>
+            </div>
+          </div>
+          <ul style="padding-left: 20px; font-size: 13px; color: var(--navy-700); line-height: 1.6;">
+            <li><strong>Power bank & cables:</strong> Keep a charged 10,000mAh+ power bank ready at all times.</li>
+            <li><strong>First Aid pouch:</strong> Bandages, antiseptic liquid, sterile gauze, burn ointment, ORS packets.</li>
+            <li><strong>Emergency Contacts:</strong> Memorize 2 family contact numbers in case phone battery depletes.</li>
+            <li><strong>Whistle & torch:</strong> Simple, non-electronic signaling tools during night hazards or power outages.</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar">
+    <ul class="mobile-nav-items">
+      <li class="mobile-nav-item">
+        <a href="/dashboard.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📊</span>
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/map.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">🗺️</span>
+          <span>Map</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item mobile-sos-center">
+        <button class="btn-sos-mobile btn-sos-trigger" aria-label="Trigger SOS">
+          <span>SOS</span>
+        </button>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/report.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📝</span>
+          <span>Report</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/reports.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📋</span>
+          <span>History</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/sos.js"></script>
+</body>
+</html>

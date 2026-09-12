@@ -1,0 +1,193 @@
+/* SURAKSHA Command Center Styles - authority.css */
+
+.command-center-header {
+  background-color: var(--navy-950);
+  color: #FFFFFF;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.command-center-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.badge-command {
+  background-color: var(--emergency-red);
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+/* Metric KPI Cards */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.metric-card {
+  background-color: #FFFFFF;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-value {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--navy-900);
+  line-height: 1.1;
+}
+
+.metric-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--slate-500);
+  margin-top: 4px;
+}
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.metric-card-critical .metric-icon { background-color: #FEE2E2; color: #DC2626; }
+.metric-card-high .metric-icon { background-color: #FFEDD5; color: #EA580C; }
+.metric-card-sos .metric-icon { background-color: #FEE2E2; color: #DC2626; animation: beaconWave 2s infinite; }
+.metric-card-resolved .metric-icon { background-color: #D1FAE5; color: #059669; }
+.metric-card-active .metric-icon { background-color: #DBEAFE; color: #2563EB; }
+
+/* Active SOS Banner */
+.sos-banner-alert {
+  background: linear-gradient(135deg, #DC2626, #B91C1C);
+  color: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+}
+
+.sos-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sos-banner-icon {
+  font-size: 32px;
+}
+
+.sos-banner-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.sos-banner-desc {
+  font-size: 13px;
+  color: #FECACA;
+}
+
+/* Operational Data Table */
+.data-table-container {
+  background-color: #FFFFFF;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.data-table-toolbar {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--slate-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: var(--slate-50);
+  padding: 12px 16px;
+  font-weight: 700;
+  color: var(--navy-800);
+  border-bottom: 1px solid var(--slate-200);
+  white-space: nowrap;
+}
+
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--slate-100);
+  color: var(--navy-700);
+  vertical-align: middle;
+}
+
+.data-table tr:hover {
+  background-color: var(--slate-50);
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Tactical Split Map in Command Center */
+.tactical-map-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  height: calc(100vh - var(--nav-height) - 40px);
+  min-height: 600px;
+}
+
+.tactical-sidebar {
+  background-color: #FFFFFF;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  overflow-y: auto;
+}
+
+.tactical-sidebar-header {
+  border-bottom: 1px solid var(--slate-200);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}

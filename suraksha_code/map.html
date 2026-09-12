@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Community Safety Map — SURAKSHA</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+</head>
+<body style="overflow: hidden;">
+
+  <!-- Header Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="nav-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SURAKSHA</span>
+          <span class="brand-tagline">CITIZEN SAFETY PLATFORM</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="/map.html" class="nav-link active">Safety Map</a></li>
+        <li><a href="/report.html" class="nav-link">Report</a></li>
+        <li><a href="/reports.html" class="nav-link">My Reports</a></li>
+        <li><a href="/safety.html" class="nav-link">Safety</a></li>
+        <li><a href="/profile.html" class="nav-link">Profile</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-sos-header btn-sos-trigger" id="header-sos-btn">
+          <span class="pulse-dot"></span>
+          <span>SOS</span>
+        </button>
+        <div id="nav-user-actions"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Full Map Container -->
+  <div style="padding: 12px 16px; height: calc(100vh - var(--nav-height)); display: flex; flex-direction: column;">
+    
+    <div class="map-layout" style="flex: 1;">
+      
+      <!-- Filter Bar -->
+      <div class="map-filter-bar">
+        <div class="filter-pills">
+          <button class="filter-pill active" data-filter="all">
+            <span>All Incidents</span>
+          </button>
+          <button class="filter-pill" data-filter="fire">
+            <span class="pill-dot" style="background-color: var(--cat-fire);"></span>
+            <span>🔥 Fire</span>
+          </button>
+          <button class="filter-pill" data-filter="road accident">
+            <span class="pill-dot" style="background-color: var(--cat-accident);"></span>
+            <span>🚗 Accident</span>
+          </button>
+          <button class="filter-pill" data-filter="suspicious activity">
+            <span class="pill-dot" style="background-color: var(--cat-suspicious);"></span>
+            <span>⚠️ Suspicious</span>
+          </button>
+          <button class="filter-pill" data-filter="medical emergency">
+            <span class="pill-dot" style="background-color: var(--cat-medical);"></span>
+            <span>🏥 Medical</span>
+          </button>
+          <button class="filter-pill" data-filter="missing person">
+            <span class="pill-dot" style="background-color: var(--cat-missing);"></span>
+            <span>🔎 Missing</span>
+          </button>
+          <button class="filter-pill" data-filter="resolved">
+            <span class="pill-dot" style="background-color: var(--cat-resolved);"></span>
+            <span>✓ Resolved</span>
+          </button>
+          <button class="filter-pill" data-filter="critical">
+            <span class="pill-dot" style="background-color: var(--cat-critical);"></span>
+            <span>🚨 Critical</span>
+          </button>
+        </div>
+
+        <div style="font-size: 12px; color: var(--slate-500); white-space: nowrap;">
+          <span>📍 Showing Meerut Monitored Sector</span>
+        </div>
+      </div>
+
+      <!-- Leaflet Map Mount Point -->
+      <div id="leaflet-map"></div>
+
+      <!-- Floating Map Legend -->
+      <div class="map-legend">
+        <div class="legend-title">Safety Map Guide</div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-fire);"></div>
+          <span>Red — Fire Hazard</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-accident);"></div>
+          <span>Orange — Road Accident</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-suspicious);"></div>
+          <span>Yellow — Suspicious Activity</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-medical);"></div>
+          <span>Blue — Medical Emergency</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-missing);"></div>
+          <span>Purple — Missing Person</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-resolved);"></div>
+          <span>Green — Resolved Incident</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background-color: var(--cat-critical);"></div>
+          <span>Dark — Critical Emergency</span>
+        </div>
+        <div class="legend-item" style="margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--slate-200);">
+          <div class="legend-zone-circle"></div>
+          <span>Recent Activity Zone</span>
+        </div>
+      </div>
+
+      <!-- Floating Action Buttons -->
+      <div class="map-floating-actions">
+        <button class="btn-float" id="btn-locate-me" title="Center to My Location">
+          <span>🎯 Locate Me</span>
+        </button>
+        <button class="btn-float btn-float-report" id="btn-float-report" title="Report Incident Here">
+          <span>📝 Report Incident</span>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar">
+    <ul class="mobile-nav-items">
+      <li class="mobile-nav-item">
+        <a href="/dashboard.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📊</span>
+          <span>Home</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/map.html" class="mobile-nav-link active">
+          <span class="mobile-nav-icon">🗺️</span>
+          <span>Map</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item mobile-sos-center">
+        <button class="btn-sos-mobile btn-sos-trigger" aria-label="Trigger SOS">
+          <span>SOS</span>
+        </button>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/report.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📝</span>
+          <span>Report</span>
+        </a>
+      </li>
+      <li class="mobile-nav-item">
+        <a href="/reports.html" class="mobile-nav-link">
+          <span class="mobile-nav-icon">📋</span>
+          <span>History</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/sos.js"></script>
+  <script src="/js/map.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      MapController.init('leaflet-map');
+    });
+  </script>
+</body>
+</html>

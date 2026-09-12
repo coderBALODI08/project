@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authority Portal Login — SURAKSHA Command Center</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/authority.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body style="background-color: var(--navy-950); min-height: 100vh; display: flex; flex-direction: column;">
+
+  <header style="padding: 24px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+    <div class="container" style="display: flex; align-items: center; justify-content: space-between;">
+      <a href="/" class="nav-brand" style="text-decoration: none !important;">
+        <div class="brand-icon" style="background: var(--emergency-red);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name" style="color: #FFFFFF;">SURAKSHA</span>
+          <span class="brand-tagline" style="color: #94A3B8;">COMMAND CENTER</span>
+        </div>
+      </a>
+      <a href="/" class="btn btn-secondary btn-sm" style="background: transparent; color: #FFFFFF; border-color: rgba(255,255,255,0.2);">
+        ← Citizen Portal
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content" style="display: flex; align-items: center; justify-content: center;">
+    <div class="container" style="max-width: 440px;">
+      
+      <div class="card" style="background-color: #FFFFFF; box-shadow: var(--shadow-xl); border: 1px solid var(--slate-300);">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="display: inline-block; background-color: #FEE2E2; color: #DC2626; padding: 4px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase;">
+            🛡️ Official Authority Access
+          </div>
+          <h1 style="font-size: 24px; font-weight: 800; color: var(--navy-900); margin-bottom: 6px;">
+            Command Center Login
+          </h1>
+          <p style="font-size: 13px; color: var(--slate-500);">
+            Secure access for authorized police, municipal, and medical emergency dispatchers.
+          </p>
+        </div>
+
+        <!-- 1-Click Officer Demo Autofill -->
+        <div style="background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: var(--radius-md); padding: 12px; margin-bottom: 20px;">
+          <div style="font-size: 11px; font-weight: 700; color: #DC2626; text-transform: uppercase; margin-bottom: 6px;">
+            ⚡ Quick SIH Demo Fill
+          </div>
+          <button type="button" class="btn btn-emergency btn-sm" style="width: 100%; font-size: 12px;" onclick="Auth.fillDemo('authority')">
+            Fill Demo Officer Credentials (Inspector Rajesh Verma)
+          </button>
+        </div>
+
+        <form id="authority-login-form">
+          <div class="form-group">
+            <label class="form-label" for="email">Authority Email</label>
+            <input type="email" id="email" class="form-control" placeholder="officer@suraksha.demo" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="password">Security Password</label>
+            <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" id="btn-auth-submit" style="width: 100%; background-color: var(--navy-950); margin-top: 8px;">
+            Enter Command Center
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--slate-400);">
+          All administrative logins and actions are recorded in secure audit logs.
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    document.getElementById('authority-login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const submitBtn = document.getElementById('btn-auth-submit');
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Verifying credentials...';
+
+      try {
+        const res = await ApiClient.auth.login(email, password);
+        ApiClient.setToken(res.access_token);
+        ApiClient.setUser(res.user);
+
+        if (res.user.role !== 'authority' && res.user.role !== 'admin') {
+          throw new Error('This account does not have police or emergency dispatcher privileges.');
+        }
+
+        App.showToast(`Command authenticated: ${res.user.full_name}`, 'success');
+        setTimeout(() => {
+          window.location.href = '/authority/dashboard.html';
+        }, 500);
+      } catch (err) {
+        App.showToast(err.message, 'error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Enter Command Center';
+      }
+    });
+  </script>
+</body>
+</html>
